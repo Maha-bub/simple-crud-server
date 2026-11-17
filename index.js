@@ -1,6 +1,6 @@
-import express from 'express'
+import express, { Router } from 'express'
 import cors from 'cors'
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import 'dotenv/config'
 const app = express();
 const port = process.env.PORT || 5000
@@ -37,6 +37,24 @@ app.get('/users', async (req, res) => {
     const allUsers = await cursor.toArray();
     res.send(allUsers)
 });
+
+app.get('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) }
+
+    const result = await users.findOne(query)
+    console.log(req)
+    res.send(result)
+})
+
+
+app.delete('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await users.deleteOne(query);
+    res.send(result)
+    // Router.refresh()
+})
 app.post('/users', async (req, res) => {
     const newUser = req.body
 
